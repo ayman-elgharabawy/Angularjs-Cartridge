@@ -1,0 +1,28 @@
+
+
+angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
+#foreach ($controller in $controllers) 
+#foreach ($state in ${controller.stateMachineContext.states})
+#if($state.hasStereotype("FrontEndView"))
+#set($done=0)
+
+#foreach($param1 in ${state.incomings.get(0).trigger.parameters})
+#if($param1.hasStereotype("FrontEndField"))
+#else
+${esc.dollar}routeProvider.when('/${state.name}/:id', {templateUrl: '${state.name}.html'});
+#set($done=1)
+#end
+#end
+
+#foreach($param1 in ${state.incomings.get(0).trigger.parameters})
+#if($done==0)
+${esc.dollar}routeProvider.when('/${state.name}', {templateUrl: '${state.name}.html'});
+#set($done=1)
+#end
+#end
+
+#end
+#end 
+#end
+
+}]);     

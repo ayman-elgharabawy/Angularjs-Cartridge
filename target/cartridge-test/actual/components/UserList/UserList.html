@@ -1,0 +1,28 @@
+                           
+							 		 <div class="span6" ng-controller="UserListCtrl">
+          <table class="table table-striped table-condensed">
+        <thead>
+        <tr>
+                  <th style="min-width: 80px;">user.firstName</th>
+                  <th style="min-width: 80px;">user.lastName</th>
+                           <th style="width:20px;">&nbsp;</th>
+                  <th style="width:20px;">&nbsp;</th>
+                 </tr>
+        </thead>
+        <tbody>
+		<tr ng-repeat="user in users">
+               <td>{{user.user.firstName}}</td>
+               <td>{{user.user.lastName}}</td>
+                                                      <td><a ng-click="goToEditPage(user.id)" class="btn btn-small btn-primary"> goToEditPage </a></td>
+                                                                             <td><a ng-click="queryCountry(user.id)" class="btn btn-small btn-primary"> queryCountry </a></td>
+                                                     </tr>
+           </tbody>
+    </table>
+                                                    <a ng-click="deleteUser()" class="btn btn-small">deleteUser</a> 
+                                                                                  <a ng-click="goToCreationPage()" class="btn btn-small">goToCreationPage</a> 
+                                                  
+                                 <div ui-view="UserEditPagedetail"></div>
+                      <div ui-view="countryPagedetail"></div>
+                                 </div>
+        				   
+                          

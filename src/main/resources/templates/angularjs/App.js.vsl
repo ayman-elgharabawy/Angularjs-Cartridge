@@ -1,0 +1,68 @@
+
+// Declare app level module which depends on filters, and services
+var app = angular.module('ngdemo', ['ui.router','ngdemocontrollers','ngdemoservices']);
+app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+    $urlRouterProvider.otherwise('/');
+     $stateProvider
+        .state('app', {
+            url:'/',
+            views: {
+              'header': {
+                templateUrl:'components/Header.html',
+                controller: 'HomeCtrl'
+              },
+              'content': {
+                templateUrl:'components/Content.html',
+                controller: 'HomeCtrl'
+              },
+           
+            }
+        })
+#foreach ($controller in $controllers) 
+#set($totalmodules="")
+#foreach ($state in ${controller.stateMachineContext.states})
+#if($state.hasStereotype("AngView"))
+#if($totalmodules=="")
+#set($totalmodules="'"+$state.name+".Controller'")
+#else
+#set($totalmodules=$totalmodules+",'"+$state.name+".Controller'")
+#end
+#end
+#end
+#end
+#foreach ($controller in $controllers) 
+#foreach ($state in ${controller.stateMachineContext.states})
+#if($state.hasStereotype("AngView"))
+#if($state.master).state('app.${state.name}', {
+  url: '${state.name}',
+  views: {
+    'content@':{
+      templateUrl:'components/${state.name}/${state.name}.html',
+      controller: '${state.name}Ctrl'
+    }
+  }
+})#elseif($state.detail)
+.state('app.${state.masterPage}.${state.name}detail', {
+    url:'/${state.name}/:id',
+    views: {
+      '${state.name}detail@app.${state.masterPage}': {
+        templateUrl:'components/${state.name}/${state.name}.html',
+        controller: '${state.name}Ctrl'
+      },
+    }
+})#else
+.state('app.${state.name}', {
+    url:'${state.name}',
+    views: {
+      'content@': {
+        templateUrl:'components/${state.name}/${state.name}.html',
+        controller: '${state.name}Ctrl'
+      },
+    }
+})#end       
+#end
+#end
+#end 
+}]);  
+app.controller('HomeCtrl', [function(){
+}]);

@@ -1,0 +1,114 @@
+                           
+		#foreach ($variable in $viewer.variables)
+        #set($model="${viewer.angModel}")
+		#end
+	 #if(${viewer.viewType}=="table")
+		 <div class="span6" ng-controller="${viewer.name}Ctrl">
+          <table class="table table-striped table-condensed">
+        <thead>
+        <tr>
+         #foreach ($variable in $viewer.variables)
+         <th style="min-width: 80px;">${variable.name}</th>
+         #end
+         #foreach ($variable in $viewer.variables)
+         <th style="width:20px;">&nbsp;</th>
+         #end
+        </tr>
+        </thead>
+        <tbody>
+		<tr ng-repeat="${model} in ${model}s">
+         #foreach ($variable in $viewer.variables)
+      <td>{{${variable.event.name}.${variable.name}}}</td>
+         #end
+          #foreach ($state in $viewer.OutgoingsStatesHasLinkAction)
+            #foreach ($event in $state.deferrableEvents)
+                 #foreach ($operation in $event.operations)
+      <td><a ng-click="${operation.name}(${model}.id)" class="btn btn-small btn-primary"> ${operation.name} </a></td>
+                 #end
+              #end
+           #end
+           </tr>
+           </tbody>
+    </table>
+         #foreach ($state in $viewer.OutgoingsStatesHasNoLinkAction)
+            #foreach ($event in $state.deferrableEvents)
+                 #foreach ($operation in $event.operations)
+              <a ng-click="${operation.name}()" class="btn btn-small">${operation.name}</a> 
+              #end
+              #end
+           #end
+           
+           #if($viewer.master)
+           #foreach($detail in $viewer.detailPages)
+           <div ui-view="${detail.name}detail"></div>
+           #end
+           #end
+           </div>
+ #elseif(${viewer.viewType}=="form")
+   <div class="container" ng-controller="${viewer.name}Ctrl">
+    <h3>${viewer.name}</h3>
+  <form novalidate="novalidate" class="form-horizontal">
+      #foreach ($variable in $viewer.variables)
+		  <div class="control-group">
+            <label class="control-label" for="${variable.name}"> ${variable.name} </label>
+              <div class="controls">
+                #if(${variable.findTaggedValue("andromda_presentation_web_view_field_type")}=='text')
+                <input type="text" id="${variable.name}" ng-model="${variable.name}"/>
+                #elseif(${variable.event.findTaggedValue("andromda_presentation_web_view_field_type")}=='hidden')
+                <input type="hidden" id="${variable.name}" ng-model="${variable.name}"/>
+                #elseif(${variable.event.findTaggedValue("andromda_presentation_web_view_field_type")}=='password')
+                <input type="password" id="${variable.name}" ng-model="${variable.name}"/>
+                #elseif(${variable.event.findTaggedValue("andromda_presentation_web_view_field_type")}=='select')
+                *****select****
+                #foreach($tra in $variable.outgoings)
+                #if(!$tra.effect)
+                <select id="$variable.name" 
+   data-bind="options: $variable.name, optionsValue: 'Id', optionsText: 'Name', optionsCaption: 'Select Account', value: selectedTestAccount">
+</select>
+                #end
+                #end
+                
+                <select data-ng-model="${variable.event.name}" data-ng-options="v as v.name for v in countrys"></select>
+   
+                #elseif(${variable.event.findTaggedValue("andromda_presentation_web_view_field_type")}=='textarea')
+                <input type="password" id="${variable.name}" ng-model="${variable.name}"/>
+                #elseif(${variable.event.findTaggedValue("andromda_presentation_web_view_field_type")}=='checkbox')
+                #elseif(${variable.event.findTaggedValue("andromda_presentation_web_view_field_type")}=='radio')
+                <input type="radio" id="${variable.name}" ng-model="${variable.name}"/>
+                #elseif(${variable.event.findTaggedValue("andromda_presentation_web_view_field_type")}=='table')
+                #end
+            </div>
+        </div>
+         #end
+		 <div class="control-group">
+            <div class="controls">
+     #foreach ($state in $viewer.OutgoingsStatesHasNoLinkAction)
+            #foreach ($event in $state.deferrableEvents)
+             #set($cc=0)
+             #foreach ($param1 in ${state.incomings.get(0).trigger.parameters})
+             #if($cc==0)
+             #set($totinputs=$param1.name)
+             #else
+             #set($totinputs= $totinputs+","+$param1.name) 
+             #end
+             #set($cc=$cc+1)
+             #end
+             #foreach ($operation in $event.operations)
+              <a ng-click="${operation.name}(${totinputs})" class="btn btn-small">${operation.name}</a> 
+              #end
+             #end
+           #end
+           </div>
+        </div>
+   </form>
+</div>
+   #elseif(${viewer.viewType}=="popup")
+   
+   
+      
+  xxxxxxx
+    
+      
+   #end
+       				   
+                          

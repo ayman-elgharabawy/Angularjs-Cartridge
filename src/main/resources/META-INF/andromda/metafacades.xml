@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<metafacades>
+ 
+ <metafacade
+		contextRoot="true"
+		class="org.andromda.cartridges.angularjs.metafacades.AngFactoryLogicImpl">
+		<mapping>
+			<stereotype>ST_ANGFACTORY</stereotype>
+		</mapping>
+</metafacade>
+	
+<metafacade class="org.andromda.cartridges.angularjs.metafacades.AngViewLogicImpl">
+        <mapping>
+			<stereotype>ST_ANGVIEW</stereotype>
+		</mapping>
+ </metafacade>
+
+
+    <metafacade class="org.andromda.cartridges.angularjs.metafacades.AngControllerLogicImpl">
+        
+           <mapping>
+			<stereotype>ST_ANGCONTROLLER</stereotype>
+		</mapping>
+		
+     
+  </metafacade>
+   <metafacade class="org.andromda.cartridges.angularjs.metafacades.AngActionLogicImpl">
+        
+           <mapping>
+			<stereotype>ST_ANGACTION</stereotype>
+		</mapping>
+		
+     
+  </metafacade>
+
+</metafacades>

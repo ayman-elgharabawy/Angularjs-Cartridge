@@ -1,0 +1,33 @@
+<div>
+  <script type="text/ng-template" id="group-template.html">
+    <div class="panel {{panelClass || 'panel-default'}}">
+      <div class="panel-heading">
+        <h4 class="panel-title" style="color:#fa39c3">
+          <a href tabindex="0" class="accordion-toggle" ng-click="toggleOpen()" uib-accordion-transclude="heading"><span
+            ng-class="{'text-muted': isDisabled}">{{heading}}</span></a>
+        </h4>
+      </div>
+      <div class="panel-collapse collapse" uib-collapse="!isOpen">
+        <div class="panel-body" style="text-align: right" ng-transclude></div>
+      </div>
+    </div>
+  </script>
+  <ul>
+<uib-accordion close-others="oneAtATime">
+<uib-accordion-group heading="CrudUseCase" is-open="status.isFirstOpen" is-disabled="status.isFirstDisabled">
+<li ui-sref-active="active"><a ui-sref=".UserCreationPage">UserCreationPage</a></li>
+<li ui-sref-active="active"><a ui-sref=".UserEditPage">UserEditPage</a></li>
+<li ui-sref-active="active"><a ui-sref=".UserList">UserList</a></li>
+<li ui-sref-active="active"><a ui-sref=".countryPage">countryPage</a></li>
+</uib-accordion-group>
+</uib-accordion>
+<uib-accordion close-others="oneAtATime">
+<uib-accordion-group heading="logintestcase" is-open="status.isFirstOpen" is-disabled="status.isFirstDisabled">
+<li ui-sref-active="active"><a ui-sref=".loginpage">loginpage</a></li>
+<li ui-sref-active="active"><a ui-sref=".LandingPage">LandingPage</a></li>
+<li ui-sref-active="active"><a ui-sref=".statepart">statepart</a></li>
+</uib-accordion-group>
+</uib-accordion>
+</ul>
+
+</div>

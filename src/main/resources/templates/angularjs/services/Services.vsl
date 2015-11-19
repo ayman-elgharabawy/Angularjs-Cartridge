@@ -1,0 +1,65 @@
+'use strict';
+var services = angular.module('ngdemoservices', ['ngResource']);
+
+services.config(function($httpProvider) {
+  /**
+   * make delete type json
+   */
+  $httpProvider.defaults.headers["delete"] = {
+    'Content-Type': 'application/json;charset=utf-8'
+  };
+})
+
+#foreach ($angFactoryFacade in $angFactoryFacades)
+#set($create=0)
+services.factory('${angFactoryFacade.fname}sFactory', 
+// var savedData = {}
+// function set(data) {
+//   savedData = data;
+// }
+// function get() {
+//  return savedData;
+// }
+
+
+   
+ function ($resource) {
+       return $resource('${angFactoryFacade.url}', {}, {   
+     #if (${angFactoryFacade.create} == true)
+      create: { method: 'POST' }
+      #set($create=1) 
+     #end     
+      #if (${angFactoryFacade.query} == true)
+#if($create==1),#end query: { method: 'GET', isArray: true }
+#set($create=1)
+     #end
+      })
+}
+);
+#if (${angFactoryFacade.show} == true||${angFactoryFacade.update} == true||${angFactoryFacade.delete} == true)
+ services.factory('${angFactoryFacade.fname}Factory',  
+// var savedData = {}
+// function set(data) {
+//   savedData = data;
+// }
+// function get() {
+//  return savedData;
+// }
+
+
+  function ($resource) {
+ return $resource('${angFactoryFacade.url}${angFactoryFacade.shapedShowParams}', {}, {
+ show: { method: 'GET', isArray: true }
+ #if (${angFactoryFacade.update} == true)
+ ,update: { method: 'PUT' }
+ #end
+  #if (${angFactoryFacade.delete} == true)
+ ,delete: { method: 'DELETE', params: {${angFactoryFacade.deleteParams}} }
+     #end
+ })
+  }
+  );
+#end 
+
+#end
+

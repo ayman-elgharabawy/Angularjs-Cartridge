@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Vendor: AndroMDA.org
+Implementation-Title: PAG-AngularJS-Cartridge
+Implementation-Version: 3.4
+Implementation-Vendor-Id: org.andromda.cartridges
+Build-Jdk: 1.6.0_45
+Built-By: ayman_gh
+Created-By: Maven Integration for Eclipse
+Implementation-Build: 
+

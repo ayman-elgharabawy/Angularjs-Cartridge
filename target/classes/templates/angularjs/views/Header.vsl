@@ -1,0 +1,29 @@
+<div>
+  <script type="text/ng-template" id="group-template.html">
+    <div class="panel {{panelClass || 'panel-default'}}">
+      <div class="panel-heading">
+        <h4 class="panel-title" style="color:#fa39c3">
+          <a href tabindex="0" class="accordion-toggle" ng-click="toggleOpen()" uib-accordion-transclude="heading"><span
+            ng-class="{'text-muted': isDisabled}">{{heading}}</span></a>
+        </h4>
+      </div>
+      <div class="panel-collapse collapse" uib-collapse="!isOpen">
+        <div class="panel-body" style="text-align: right" ng-transclude></div>
+      </div>
+    </div>
+  </script>
+  <ul>
+#* *##foreach ($page1 in $pages) 
+<uib-accordion close-others="oneAtATime">
+<uib-accordion-group heading="${page1.useCase.name}" is-open="status.isFirstOpen" is-disabled="status.isFirstDisabled">
+#* *##foreach ($state in $page1.useCase.activityGraph.states)
+#*    *##if($state.hasStereotype("AngView"))
+<li ui-sref-active="active"><a ui-sref=".${state.name}">${state.name}</a></li>
+#*     *##end
+#* *##end	
+</uib-accordion-group>
+</uib-accordion>
+#* *##end
+</ul>
+
+</div>

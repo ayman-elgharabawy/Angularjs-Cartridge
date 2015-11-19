@@ -1,0 +1,220 @@
+'use strict';
+#* *##set($Q = '"')
+
+/* Controllers */
+var app = angular.module('ngdemocontrollers', []);
+app.run(function ($rootScope, $templateCache) {
+    $rootScope.$on('$viewContentLoaded', function () {
+        $templateCache.removeAll();
+    });
+});
+
+
+#* *##foreach ($controller in ${controllers})
+#* *##set($cnameq="'"+$controller.name+"'")
+#* *##set($facnameq="")
+#* *##set($facname="")
+#* *##foreach ($clazz in $controller.SourceDependencies)
+#* *##if($facnameq=="")
+#* *##set($facnameq="'"+${clazz.name.substring(0,1).toUpperCase()}+""+${clazz.name.substring(1)}+"Factory'"+",'"+${clazz.name.substring(0,1).toUpperCase()}+""+${clazz.name.substring(1)}+"sFactory'")
+#* *##set($facname=${clazz.name.substring(0,1).toUpperCase()}+""+${clazz.name.substring(1)}+"Factory"+","+${clazz.name.substring(0,1).toUpperCase()}+""+${clazz.name.substring(1)}+"sFactory")
+#* *##else
+#* *##set($facnameq=$facnameq+",'"+${clazz.name.substring(0,1).toUpperCase()}+""+${clazz.name.substring(1)}+"Factory'"+",'"+${clazz.name.substring(0,1).toUpperCase()}+""+${clazz.name.substring(1)}+"sFactory'")
+#* *##set($facname=$facname+","+${clazz.name.substring(0,1).toUpperCase()}+""+${clazz.name.substring(1)}+"Factory"+","+${clazz.name.substring(0,1).toUpperCase()}+""+${clazz.name.substring(1)}+"sFactory")
+#* *##end
+#* *##end
+#* *##if($controller.hasStereotype("AngController"))
+#*   *##foreach ($state in $controller.useCase.activityGraph.states)
+#*      *##if($state.hasStereotype("AngView"))
+/*************************Controller  ${state.name}Ctrl *******************************************/
+app.controller('${state.name}Ctrl', ['${esc.dollar}scope', '${esc.dollar}state', '$stateParams', ${facnameq}  , '$location','$rootScope',
+    function (${esc.dollar}scope, ${esc.dollar}state, $stateParams,  ${facname}, $location,$rootScope) {
+#*             *##foreach ($transition in ${state.outgoings})
+#*                *##set($actionstate=${transition.target})
+#*                    *##if(${actionstate.hasStereotype("AngAction")})
+#*                       *##if($actionstate.outgoings.size()>0)
+#*                         *##set($Next=${actionstate.outgoings.get(0).target})
+#*        		                                 *##if(${actionstate.outgoings.get(0).target.hasStereotype("AngView")})
+#*      		                                   *##set($Nextpage=${Next.name.toString()})
+#*      		                                  *##else
+#*      		                                  *##if($Next.outgoings.size()>0)
+#*      		                                    *##if(${Next.outgoings.get(0).target.hasStereotype("AngView")})
+#*      		                                       *##set($Nextpage=${Next.outgoings.get(0).target.name.toString()})
+#*      		                                    *##end
+#*      		                                  *##end
+#*      		                                *##end
+#*                         *##foreach($event in $transition.target.deferrableEvents)
+//////////Preparing reading input parameter to pass it to next state
+#*                                      *##if($transition.trigger.parameters.size()>0)
+#*                                       *##set($counter1=0)
+#*                                      *##foreach($par in ${transition.trigger.parameters})
+#*                                       *##if($counter1==0)
+#*                                       *##if($par.name.indexOf(".")>0)
+#*                                       *##set ($index = 1+$par.name.indexOf("."))
+#*                                       *##else
+#*                                       *##set ($index = 0)
+#*                                       *##end
+#*                                       *##set($ins=${par.name.substring($index)})
+#*                                       *##set($stateins=${par.name.substring($index)})
+#*                                       *##set($routins=${par.name.substring($index)}+":"+${par.name.substring($index)})
+#*                                       *##else
+#*                                       *##set($ins=$ins+","+${par.name.substring($index)})
+#*                                       *##set($stateins=$stateins+"/"+${par.name.substring($index)})
+#*                                       *##set($routins=$routins+","+${par.name.substring($index)}+":"+${par.name.substring($index)})
+#*                                       *##end
+#*                                       *##set($counter1=1)
+#*                                      *##end
+//////////////End Reading input Parameter
+${esc.dollar}scope.${event.operation.name}= function(${ins}) {
+#*                           *##foreach ($element1 in ${ins.split(",")})
+			  $rootScope.$element1=$element1;			
+#*                           *##end
+#*                                       *##else
+${esc.dollar}scope.${event.operation.name}= function() {
+#*                                       *##end
+#*                              *##foreach($operation in $controller.operations)
+#*                                *##if($operation.name==$event.operation.name)
+#*      		                    *##if(${operation.hasStereotype("WebServiceFeed")})
+#*                                     *##set($methodtype=${operation.findTaggedValue("andromda_entry_link")})
+#*                                   *##end
+#*                                   *##set($selectedFactory=${operation.SourceDependencies.get(0)})
+#*                                   *##set( $upper = ${selectedFactory.name.toString().substring(0,1).toUpperCase()} ) 
+#*                                   *##set( $rest = ${selectedFactory.name.toString().substring(1)}) 
+#*                                   *##set( $sourceFactory = "$upper$rest" )
+#*                                 *##end
+#*                              *##end
+#*                                  *##if($methodtype=='update')
+${sourceFactory}Factory.update(${esc.dollar}scope.${state.incomings.get(0).trigger.name});
+#*                                    *##elseif($methodtype=='delete')
+#*                                    *##if($transition.trigger.parameters.size()>0)
+${sourceFactory}Factory.delete({ $routins});
+#*                                      *##end
+#*                                  *##elseif($methodtype=='create')
+${sourceFactory}sFactory.create(${esc.dollar}scope.${state.incomings.get(0).trigger.name});
+#*                                  *##elseif($methodtype=='show')
+#*                  *##set( $upper1 = ${sourceFactory.toString().substring(0,1).toLowerCase()} ) 
+#*                  *##set( $rest1 = ${sourceFactory.toString().substring(1)}) 
+#*                  *##set( $parentsource1 = "$upper1$rest1" )
+${esc.dollar}scope.${parentsource1} = ${sourceFactory}Factory.show({${routins}});
+${esc.dollar}scope.${parentsource1}.${esc.dollar}promise.then(function(data){
+${esc.dollar}rootScope.${parentsource1}=data;
+console.log($rootScope.data[0]);
+#*                  *##foreach($tra1 in $transition.target.outgoings)
+#*                  *##if($tra1.guard)
+#*//////////Preparing reading input parameter to pass it to next state*#
+#*====================================================================*#
+#*====================================================================*#
+#*====================================================================*#
+#*                                      *##if($tra1.trigger.parameters.size()>0)
+#*                                       *##set($counter2=0)
+#*                                      *##foreach($par2 in ${transition.trigger.parameters})
+#*                                       *##if($counter2==0)
+#*                                       *##if($par2.name.indexOf(".")>0)
+#*                                       *##set ($index = 1+$par2.name.indexOf("."))
+#*                                       *##else
+#*                                       *##set ($index = 0)
+#*                                       *##end
+#*                                       *##set($ins2=${par2.name.substring($index)})
+#*                                       *##set($stateins2=${par2.name.substring($index)})
+#*                                       *##set($routins2=${par2.name.substring($index)}+":"+${par2.name.substring($index)})
+#*                                       *##else
+#*                                       *##set($ins2=$ins2+","+${par2.name.substring($index)})
+#*                                       *##set($stateins2=$stateins2+"/"+${par2.name.substring($index)})
+#*                                       *##set($routins2=$routins2+","+${par2.name.substring($index)}+":"+${par2.name.substring($index)})
+#*                                       *##end
+#*                                       *##set($counter2=1)
+#*                                      *##end
+#*                                      *##end
+#*//////////////End Reading input Parameter*#
+#*====================================================================*#
+#*====================================================================*#
+#*====================================================================*#
+#*                         *##set($Next1=${tra1.target})
+#*      		           *##set($Nextpage1=${Next1.outgoings.get(0).target.name.toString()})
+if(${tra1.guard.body}){
+#*           *##if(${state.hasStereotype("AngView")})
+#*           *##set($hasparam1=0)
+#*            *##if($tra1.trigger.parameters.size()>0)
+#*               *##if(${transition.source.findTaggedValue("@angview.master")}=='true')
+${esc.dollar}state.go('app.${Nextpage1}.detail'+{${routins2}});
+#*               *##else
+${esc.dollar}state.go('app.${Nextpage1}',+{${routins2}});
+#*               *##end
+#*           *##else
+${esc.dollar}state.go('app.${Nextpage1}');
+#*           *##end
+#*          *##end
+}#*====================================================================*#
+#*                  *##end
+#*                  *##end
+});
+#*                                   *##end
+#*                       *##end
+#*                       *##end
+#*           *##if(${state.hasStereotype("AngView")})
+#*           *##set($hasparam1=0)
+#*            *##if($transition.trigger.parameters.size()>0)
+#*               *##if(${transition.source.findTaggedValue("@angview.master")}=='true')
+//${esc.dollar}location.path('/${Nextpage}/'+$stateins);
+//${esc.dollar}state.go('app.${Nextpage}.detail'+{${routins}});
+#*               *##else
+
+//${esc.dollar}location.path('/$Nextpage}/'+$stateins);
+//${esc.dollar}state.go('app.${Nextpage}',+{${routins}});
+#*               *##end
+#*           *##else
+//${esc.dollar}location.path('/${Nextpage}/');
+//${esc.dollar}state.go('app.${Nextpage}');
+#*           *##end
+#*          *##end
+};
+#*   *##end 
+#*  *##end
+#*====================Preparing reading input parameter to pass it to next state================================================*#
+#*                                      *##if(${state.incomings.get(0).source.incomings.get(0).trigger.parameters.size()}>0)
+#*                                       *##set($counter2=0)
+#*                                      *##foreach($passingparam in ${state.incomings.get(0).source.incomings.get(0).trigger.parameters})
+#*                                       *##if($counter2==0)
+#*                                       *##if($passingparam.name.indexOf(".")>0)
+#*                                       *##set ($index = 1+$passingparam.name.indexOf("."))
+#*                                       *##else
+#*                                       *##set ($index = 0)
+#*                                       *##end
+#*                                       *##set($ins=${passingparam.name.substring($index)})
+#*                                       *##set($passstateins=${passingparam.name.substring($index)})
+#*                                       *##set($passroutins=${passingparam.name.substring($index)}+":$rootScope.data[0]."+${passingparam.name.substring($index)})
+#*                                       *##else
+#*                                       *##set($ins=$ins+","+${passingparam.name.substring($index)})
+#*                                       *##set($passstateins=$passstateins+"/"+${passingparam.name.substring($index)})
+#*                                       *##set($passroutins=$passroutins+","+${passingparam.name.substring($index)}+":$rootScope.data[0]."+${passingparam.name.substring($index)})
+#*                                       *##end
+#*                                       *##set($counter2=1)
+#*                                      *##end
+#*                                      *##end
+#*====================End Reading input Parameter================================================*#
+#*      *##if(${state.incomings.get(0).source.deferrableEvents.size()}>0)
+#*         *##foreach($operation in $controller.operations)
+#*             *##if(${operation.SourceDependencies.size()}>0)
+#*                 *##if(${operation.name}==${state.incomings.get(0).source.deferrableEvents.get(0).operation.name})
+#*                  *##set($selectedOpname=${operation.SourceDependencies.get(0).name})
+#*                                     *##set($methodtype="")
+#*      		                    *##if(${operation.hasStereotype("WebServiceFeed")})
+#*                                     *##set($methodtype=${operation.findTaggedValue("andromda_entry_link")})
+#*                                   *##end
+#*                  *##set( $upper = $selectedOpname.toString().substring(0,1).toUpperCase() ) 
+#*                  *##set( $rest = $selectedOpname.toString().substring(1)) 
+#*                  *##set( $parentsource = "$upper$rest" )
+#*                    *##if($methodtype=='query')
+${esc.dollar}scope.${selectedOpname}s = ${parentsource}sFactory.query();
+#*                       *##elseif($methodtype=='show')
+${esc.dollar}scope.${selectedOpname} = ${parentsource}Factory.show({${passroutins}});
+#*                     *##end
+#*                *##end
+#*          *##end
+#*    *# #end
+#* *# #end
+    }]);
+#* *##end
+#* *##end
+#* *##end
+#* *##end
